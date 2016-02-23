@@ -23,7 +23,7 @@ React Cortex provides utility functions for you to test your React components.
 
 Here is an example using Mocha:
 
-```
+```js
 import React from 'react';
 import {expect} from 'chai';
 const {describe, it} = global;
@@ -59,13 +59,13 @@ describe('A Program Component', () => {
 
 If you are working on a large visual change, you can force new screenshots to be generated without running assertions by using environment variables in the command line:
 
-```
+```sh
 env UPDATE_SNAPSHOTS=1 npm run testonly
 ```
 
 Or by passing in an updateSnapshots option:
 
-```
+```js
 var differ = new Differ({
   component: <Program program={program} />,
   componentName: 'program',
@@ -74,4 +74,12 @@ var differ = new Differ({
   done, // Used when updating screenshots
   updateSnapshots: true
 });
+```
+
+# Development
+
+We have a build script to transpile the ES2015 code to ES2013 code.
+
+```sh
+npm run build
 ```
