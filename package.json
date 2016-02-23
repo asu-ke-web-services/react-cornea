@@ -1,0 +1,22 @@
+{
+  "name": "react-cortex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "react-cortex.compiled.js",
+  "scripts": {
+    "build": "babel react-cortex.js --out-file react-cortex.compiled.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.5.1",
+    "babel-preset-es2015": "^6.5.0"
+  },
+  "dependencies": {
+    "enzyme": "^2.0.0",
+    "file-exists": "^1.0.0",
+    "image-diff": "^1.3.0",
+    "phantom": "^2.0.0"
+  }
+}
