@@ -78,6 +78,14 @@ var differ = new Differ({
 });
 ```
 
+## Using with your current system
+
+If you are using this utility, use `env UPDATE_SNAPSHOTS=1 npm run test` to generate a first, initial set of screenshots (called `theirs-{componentName}.png`). You should check these into your version control.
+
+Then, whenever you run tests `npm run test`, the utility will diff the current version of your component with the `theirs-{componentName}.png` file.
+
+Watch out, it is not very useful to check in the `your-{componentName}.png` or `difference.png`; however, you can if you want ;)
+
 # API
 
 ```
