@@ -23,7 +23,7 @@ const createScreenshot = ({ resolve, reject, componentName, html, ref, path }) =
         page.property('content', html).then(() => {
           // TODO figure out a better way to do this
           setTimeout(() => {
-            let fullFileName = path + 'latest-' + componentName + '.png';
+            let fullFileName = path + 'yours-' + componentName + '.png';
             page.render(fullFileName).then((e) => {
               ph.exit();
               ref.currentSnap = fullFileName;
@@ -91,9 +91,9 @@ const Differ = function ({
   this.compare = () => {
     var promise = new Promise((resolve, reject) => {
       this.snap( { path: savePath } ).then((differ) => {
-        differ.compareTo( { path: savePath, filename: componentName + '.png' } ).then((areTheSame) => {
+        differ.compareTo( { path: savePath, filename: 'theirs-' + componentName + '.png' } ).then((areTheSame) => {
           if (process.env.UPDATE_SNAPSHOTS || updateSnapshots) {
-            differ.moveSnapshot({ path: savePath, filename: componentName + '.png' });
+            differ.moveSnapshot({ path: savePath, filename: 'theirs-' + componentName + '.png' });
             differ.cleanup();
             onScreenshotsUpdated();
           } else {

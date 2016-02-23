@@ -3,6 +3,8 @@ React Cortex
 
 A testing utility for generating visual diffs of your React components.
 
+This tool will create 3 files - `theirs-{componentName}.png`, `yours-{componentName}.png` and `difference.png`. When `differ.cleanup` is called, `yours-{componentName}.png` and `difference.png` will be deleted.
+
 # Installation
 
 ```
@@ -75,6 +77,71 @@ var differ = new Differ({
   updateSnapshots: true
 });
 ```
+
+# API
+
+```
+new Differ(options) :=> Object{Differ}
+
+Create a new Differ object
+
+- options
+    - component - The React component you want to test
+    - componentName - The name of your component, used to save your file
+    - savePath - The folder where your screenshots should be saved
+    - threshold - The percentage difference allowed. Defaults to 0
+    - onScreenshotsUpdated - What to do after screenshots have been updated when using the `env UPDATE_SCREENSHOTS=1` or option `updateScreenshots: true`. Defaults to noop.
+    - updateScreenshots - Instead of running tests, simply update screenshots. Defaults to false.
+
+```
+
+```
+compare() :=> Promise
+
+Will snap a picture of the your version of the React component, then compare it to the baseline, then generate a difference image. Once complete, the given
+Promise will resolve with whether the difference is within the threshold
+```
+
+```
+cleanup() :=> nil
+
+Will remove `yours-{componentName}.png` and `difference.png`.
+```
+
+## Internal calls
+
+The following are provided, but their interfaces may change in the future:
+
+```
+snap(options) :=> Promise
+
+Will take a screenshot.
+
+- options
+    - path - The path to save the screenshot to
+```
+
+```
+compareTo(options) :=> Promise
+
+Will compare the screenshots and generate diff, as well as resolve the Promise with whether the images are within the threshold difference.
+
+- options
+    - path - Path to save to
+    - filename - File to check the currentSnap against
+```
+
+```
+moveSnapshot(options) :=> boolean
+
+Will attempt to move the snapshot from `yours-{componentName}.png` to `theirs-{componentName}.png`
+
+- options
+    - path - Folder to move to
+    - filename - Filename to move to
+
+```
+
 
 # Development
 

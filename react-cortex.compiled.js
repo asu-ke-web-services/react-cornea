@@ -54,7 +54,7 @@ var createScreenshot = function createScreenshot(_ref) {
         page.property('content', html).then(function () {
           // TODO figure out a better way to do this
           setTimeout(function () {
-            var fullFileName = path + 'latest-' + componentName + '.png';
+            var fullFileName = path + 'yours-' + componentName + '.png';
             page.render(fullFileName).then(function (e) {
               ph.exit();
               ref.currentSnap = fullFileName;
@@ -141,9 +141,9 @@ var Differ = function Differ(_ref2) {
   this.compare = function () {
     var promise = new Promise(function (resolve, reject) {
       _this.snap({ path: savePath }).then(function (differ) {
-        differ.compareTo({ path: savePath, filename: componentName + '.png' }).then(function (areTheSame) {
+        differ.compareTo({ path: savePath, filename: 'theirs-' + componentName + '.png' }).then(function (areTheSame) {
           if (process.env.UPDATE_SNAPSHOTS || updateSnapshots) {
-            differ.moveSnapshot({ path: savePath, filename: componentName + '.png' });
+            differ.moveSnapshot({ path: savePath, filename: 'theirs-' + componentName + '.png' });
             differ.cleanup();
             onScreenshotsUpdated();
           } else {
