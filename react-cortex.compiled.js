@@ -74,6 +74,13 @@ var Differ = function Differ(_ref2) {
 
   var componentName = _ref2.componentName;
   var component = _ref2.component;
+  var savePath = _ref2.savePath;
+  var _ref2$threshold = _ref2.threshold;
+  var threshold = _ref2$threshold === undefined ? 0 : _ref2$threshold;
+  var _ref2$onScreenshotsUp = _ref2.onScreenshotsUpdated;
+  var onScreenshotsUpdated = _ref2$onScreenshotsUp === undefined ? function () {} : _ref2$onScreenshotsUp;
+  var _ref2$updateSnapshots = _ref2.updateSnapshots;
+  var updateSnapshots = _ref2$updateSnapshots === undefined ? false : _ref2$updateSnapshots;
 
   this.currentSnap = null;
   this.currentDiff = null;
@@ -96,8 +103,6 @@ var Differ = function Differ(_ref2) {
   this.compareTo = function (_ref4) {
     var path = _ref4.path;
     var filename = _ref4.filename;
-    var _ref4$threshold = _ref4.threshold;
-    var threshold = _ref4$threshold === undefined ? 0 : _ref4$threshold;
 
     var promise = new Promise(function (resolve, reject) {
       _this.currentDiff = path + 'difference.png';
@@ -131,6 +136,24 @@ var Differ = function Differ(_ref2) {
     if ((0, _fileExists2.default)(_this.currentDiff)) {
       _fs2.default.unlinkSync(_this.currentDiff);
     }
+  };
+
+  this.compare = function () {
+    var promise = new Promise(function (resolve, reject) {
+      _this.snap({ path: savePath }).then(function (differ) {
+        differ.compareTo({ path: savePath, filename: componentName + '.png' }).then(function (areTheSame) {
+          if (process.env.UPDATE_SNAPSHOTS || updateSnapshots) {
+            differ.moveSnapshot({ path: savePath, filename: componentName + '.png' });
+            differ.cleanup();
+            onScreenshotsUpdated();
+          } else {
+            resolve(areTheSame);
+          }
+        });
+      });
+    });
+
+    return promise;
   };
 };
 

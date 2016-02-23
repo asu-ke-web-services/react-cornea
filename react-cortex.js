@@ -38,7 +38,9 @@ const createScreenshot = ({ resolve, reject, componentName, html, ref, path }) =
 
 // TODO support multiple viewport sizes
 // TODO support stylesheet injection
-const Differ = function ({ componentName, component }) {
+const Differ = function ({
+    componentName, component, savePath, threshold = 0, onScreenshotsUpdated = ()=>{}, updateSnapshots = false
+}) {
   this.currentSnap = null;
   this.currentDiff = null;
   this.html        = renderHtml(component);
@@ -54,7 +56,7 @@ const Differ = function ({ componentName, component }) {
     return promise;   
   };
 
-  this.compareTo = ({ path, filename, threshold = 0 }) => {
+  this.compareTo = ({ path, filename }) => {
     let promise = new Promise((resolve, reject) => {
       this.currentDiff = path + 'difference.png';
       imageDiff({
@@ -85,6 +87,24 @@ const Differ = function ({ componentName, component }) {
       fs.unlinkSync( this.currentDiff );
     }
   }
+
+  this.compare = () => {
+    var promise = new Promise((resolve, reject) => {
+      this.snap( { path: savePath } ).then((differ) => {
+        differ.compareTo( { path: savePath, filename: componentName + '.png' } ).then((areTheSame) => {
+          if (process.env.UPDATE_SNAPSHOTS || updateSnapshots) {
+            differ.moveSnapshot({ path: savePath, filename: componentName + '.png' });
+            differ.cleanup();
+            onScreenshotsUpdated();
+          } else {
+            resolve(areTheSame);
+          }
+        });
+      });
+    });
+
+    return promise;
+  };
 };
 
 export { Differ };
