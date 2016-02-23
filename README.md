@@ -1,4 +1,4 @@
-React Cortex
+React Cornea
 ============
 
 A testing utility for generating visual diffs of your React components.
@@ -8,7 +8,7 @@ This tool will create 3 files - `theirs-{componentName}.png`, `yours-{componentN
 # Installation
 
 ```
-npm install --save-dev react-cortex
+npm install --save-dev react-cornea
 ```
 
 This NPM package has a dependency on [ImageMagick](http://www.imagemagick.org/). To install it, see the [ImageMagick documentation](http://www.imagemagick.org/script/binary-releases.php). Installation on some Linux systems, such as Ubuntu is easy:
@@ -21,7 +21,7 @@ Note that when using TravisCI, ImageMagick is already installed.
 
 # Usage
 
-React Cortex provides utility functions for you to test your React components.
+React Cornea provides utility functions for you to test your React components.
 
 Here is an example using Mocha:
 
@@ -29,7 +29,7 @@ Here is an example using Mocha:
 import React from 'react';
 import {expect} from 'chai';
 const {describe, it} = global;
-import { Differ } from 'react-cortex';
+import { Differ } from 'react-cornea';
 import { default as Program } from '../program.jsx';
 
 describe('A Program Component', () => {
