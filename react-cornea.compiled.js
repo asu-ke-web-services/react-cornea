@@ -29,10 +29,13 @@ var _fileExists2 = _interopRequireDefault(_fileExists);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var renderHtml = function renderHtml(component) {
+var renderHtml = function renderHtml(component, css) {
   var wrapper = (0, _enzyme.render)(component);
   var html = wrapper.html();
-  html = '<html><body>' + html + '</body></html>';
+
+  var styles = '<style>' + css + '</style>';
+
+  html = '<html><head>' + styles + '</head><body>' + html + '</body></html>';
 
   return html;
 };
@@ -44,13 +47,12 @@ var createScreenshot = function createScreenshot(_ref) {
   var html = _ref.html;
   var ref = _ref.ref;
   var path = _ref.path;
+  var css = _ref.css;
+  var viewportSize = _ref.viewportSize;
 
   _phantom2.default.create().then(function (ph) {
     ph.createPage().then(function (page) {
-      page.property('viewportSize', {
-        width: 1440,
-        height: 900
-      }).then(function () {
+      page.property('viewportSize', viewportSize).then(function () {
         page.property('content', html).then(function () {
           // TODO figure out a better way to do this
           setTimeout(function () {
@@ -67,14 +69,16 @@ var createScreenshot = function createScreenshot(_ref) {
   });
 };
 
-// TODO support multiple viewport sizes
-// TODO support stylesheet injection
 var Differ = function Differ(_ref2) {
   var _this = this;
 
   var componentName = _ref2.componentName;
   var component = _ref2.component;
   var savePath = _ref2.savePath;
+  var _ref2$viewportSize = _ref2.viewportSize;
+  var viewportSize = _ref2$viewportSize === undefined ? { width: 1440, height: 900 } : _ref2$viewportSize;
+  var _ref2$css = _ref2.css;
+  var css = _ref2$css === undefined ? '' : _ref2$css;
   var _ref2$threshold = _ref2.threshold;
   var threshold = _ref2$threshold === undefined ? 0 : _ref2$threshold;
   var _ref2$onScreenshotsUp = _ref2.onScreenshotsUpdated;
@@ -84,7 +88,7 @@ var Differ = function Differ(_ref2) {
 
   this.currentSnap = null;
   this.currentDiff = null;
-  this.html = renderHtml(component);
+  this.html = renderHtml(component, css);
 
   this.snap = function (_ref3) {
     var _ref3$path = _ref3.path;
@@ -92,8 +96,13 @@ var Differ = function Differ(_ref2) {
 
     var promise = new Promise(function (resolve, reject) {
       createScreenshot({
-        resolve: resolve, reject: reject, componentName: componentName, html: _this.html, path: path,
-        ref: _this
+        resolve: resolve,
+        reject: reject,
+        componentName: componentName,
+        html: _this.html,
+        path: path,
+        ref: _this,
+        viewportSize: viewportSize
       });
     });
 

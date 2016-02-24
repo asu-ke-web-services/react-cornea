@@ -5,21 +5,21 @@ import imageDiff from 'image-diff';
 import fs from 'fs';
 import fileExists from 'file-exists';
 
-const renderHtml = (component) => {
+const renderHtml = (component, css) => {
   const wrapper = render(component);
   let html = wrapper.html();
-  html = '<html><body>' + html + '</body></html>'; 
+
+  let styles = '<style>' + css + '</style>'; 
+
+  html = '<html><head>' + styles + '</head><body>' + html + '</body></html>'; 
 
   return html;
 }
 
-const createScreenshot = ({ resolve, reject, componentName, html, ref, path }) => {
+const createScreenshot = ({ resolve, reject, componentName, html, ref, path, css, viewportSize }) => {
   phantom.create().then((ph) => {
     ph.createPage().then((page) => {
-      page.property('viewportSize', {
-        width: 1440,
-        height: 900
-      }).then(() => {
+      page.property('viewportSize', viewportSize).then(() => {
         page.property('content', html).then(() => {
           // TODO figure out a better way to do this
           setTimeout(() => {
@@ -36,20 +36,30 @@ const createScreenshot = ({ resolve, reject, componentName, html, ref, path }) =
   });
 };
 
-// TODO support multiple viewport sizes
-// TODO support stylesheet injection
 const Differ = function ({
-    componentName, component, savePath, threshold = 0, onScreenshotsUpdated = ()=>{}, updateSnapshots = false
+    componentName,
+    component,
+    savePath,
+    viewportSize = { width: 1440, height: 900 },
+    css = '',
+    threshold = 0,
+    onScreenshotsUpdated = () => {},
+    updateSnapshots = false
 }) {
   this.currentSnap = null;
   this.currentDiff = null;
-  this.html        = renderHtml(component);
+  this.html        = renderHtml(component, css);
 
   this.snap = ({ path = './' }) => {
     let promise = new Promise((resolve, reject) => {
       createScreenshot({
-        resolve, reject, componentName, html: this.html, path,
-        ref: this
+        resolve,
+        reject,
+        componentName,
+        html: this.html,
+        path,
+        ref: this,
+        viewportSize
       });
     });
     

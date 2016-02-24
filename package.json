@@ -4,7 +4,7 @@
     "type" : "git",
     "url" : "https://github.com/gios-asu/react-cornea.git"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A testing utility for generating visual diffs of your React components",
   "main": "react-cornea.compiled.js",
   "scripts": {

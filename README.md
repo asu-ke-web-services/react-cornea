@@ -44,6 +44,8 @@ describe('A Program Component', () => {
       componentName: 'program',
       savePath: __dirname + '/',
       threshold: 0,
+      viewportSize: { width: 1440, height: 900 },
+      css: 'body { background-color: white } ',
       onScreenshotsUpdated: done // Used when updating screenshots
     });
 
@@ -73,7 +75,7 @@ var differ = new Differ({
   componentName: 'program',
   savePath: __dirname + '/',
   threshold: 0,
-  done, // Used when updating screenshots
+  onScreenshotsUpdated: done, // Used when updating screenshots
   updateSnapshots: true
 });
 ```
@@ -98,6 +100,8 @@ Create a new Differ object
     - componentName - The name of your component, used to save your file
     - savePath - The folder where your screenshots should be saved
     - threshold - The percentage difference allowed. Defaults to 0
+    - css - A CSS string of custom styles you would like injected. Defaults to ''
+    - viewportSize - An object with height and width defined as numbers. Defaults to { width: 1440, height: 900 }
     - onScreenshotsUpdated - What to do after screenshots have been updated when using the `env UPDATE_SCREENSHOTS=1` or option `updateScreenshots: true`. Defaults to noop.
     - updateScreenshots - Instead of running tests, simply update screenshots. Defaults to false.
 
