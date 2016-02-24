@@ -27,7 +27,13 @@ var _fileExists = require('file-exists');
 
 var _fileExists2 = _interopRequireDefault(_fileExists);
 
+var _gm = require('gm');
+
+var _gm2 = _interopRequireDefault(_gm);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var imagemagick = _gm2.default.subClass({ imageMagick: true });
 
 var renderHtml = function renderHtml(component, css) {
   var wrapper = (0, _enzyme.render)(component);
@@ -121,8 +127,10 @@ var Differ = function Differ(_ref2) {
         diffImage: path + 'difference.png',
         threshold: threshold
       }, function (err, imagesAreSame) {
-        resolve(imagesAreSame);
-      });
+        imagemagick().command('composite').in("-gravity", "center").in(path + 'difference.png').in(this.currentSnap).write(path + 'difference.png', function (err) {
+          resolve(imagesAreSame);
+        });
+      }.bind(_this));
     });
 
     return promise;

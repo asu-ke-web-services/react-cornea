@@ -4,6 +4,9 @@ import phantom from 'phantom';
 import imageDiff from 'image-diff';
 import fs from 'fs';
 import fileExists from 'file-exists';
+import gm from 'gm';
+
+let imagemagick = gm.subClass({ imageMagick: true });
 
 const renderHtml = (component, css) => {
   const wrapper = render(component);
@@ -75,8 +78,14 @@ const Differ = function ({
         diffImage: path + 'difference.png',
         threshold
       }, function (err, imagesAreSame) {
-        resolve(imagesAreSame);
-      });
+        imagemagick().command('composite') 
+          .in("-gravity", "center")
+          .in(path + 'difference.png')
+          .in(this.currentSnap)
+          .write(path + 'difference.png', function (err) {
+            resolve(imagesAreSame);
+          });
+      }.bind(this));
     });
 
     return promise;
