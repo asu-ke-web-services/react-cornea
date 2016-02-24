@@ -16,13 +16,10 @@ const renderHtml = (component, css) => {
   return html;
 }
 
-const createScreenshot = ({ resolve, reject, componentName, html, ref, path, css }) => {
+const createScreenshot = ({ resolve, reject, componentName, html, ref, path, css, viewportSize }) => {
   phantom.create().then((ph) => {
     ph.createPage().then((page) => {
-      page.property('viewportSize', {
-        width: 1440,
-        height: 900
-      }).then(() => {
+      page.property('viewportSize', viewportSize).then(() => {
         page.property('content', html).then(() => {
           // TODO figure out a better way to do this
           setTimeout(() => {
@@ -39,12 +36,11 @@ const createScreenshot = ({ resolve, reject, componentName, html, ref, path, css
   });
 };
 
-// TODO support multiple viewport sizes
-// TODO support stylesheet injection
 const Differ = function ({
     componentName,
     component,
     savePath,
+    viewportSize = { width: 1440, height: 900 },
     css = '',
     threshold = 0,
     onScreenshotsUpdated = () => {},
@@ -62,7 +58,8 @@ const Differ = function ({
         componentName,
         html: this.html,
         path,
-        ref: this
+        ref: this,
+        viewportSize
       });
     });
     

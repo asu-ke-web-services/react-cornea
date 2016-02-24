@@ -48,13 +48,11 @@ var createScreenshot = function createScreenshot(_ref) {
   var ref = _ref.ref;
   var path = _ref.path;
   var css = _ref.css;
+  var viewportSize = _ref.viewportSize;
 
   _phantom2.default.create().then(function (ph) {
     ph.createPage().then(function (page) {
-      page.property('viewportSize', {
-        width: 1440,
-        height: 900
-      }).then(function () {
+      page.property('viewportSize', viewportSize).then(function () {
         page.property('content', html).then(function () {
           // TODO figure out a better way to do this
           setTimeout(function () {
@@ -71,14 +69,14 @@ var createScreenshot = function createScreenshot(_ref) {
   });
 };
 
-// TODO support multiple viewport sizes
-// TODO support stylesheet injection
 var Differ = function Differ(_ref2) {
   var _this = this;
 
   var componentName = _ref2.componentName;
   var component = _ref2.component;
   var savePath = _ref2.savePath;
+  var _ref2$viewportSize = _ref2.viewportSize;
+  var viewportSize = _ref2$viewportSize === undefined ? { width: 1440, height: 900 } : _ref2$viewportSize;
   var _ref2$css = _ref2.css;
   var css = _ref2$css === undefined ? '' : _ref2$css;
   var _ref2$threshold = _ref2.threshold;
@@ -103,7 +101,8 @@ var Differ = function Differ(_ref2) {
         componentName: componentName,
         html: _this.html,
         path: path,
-        ref: _this
+        ref: _this,
+        viewportSize: viewportSize
       });
     });
 
