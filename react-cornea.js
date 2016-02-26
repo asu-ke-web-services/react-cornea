@@ -51,7 +51,7 @@ const Differ = function ({
     viewportSize = DEVICE_SIZES.DESKTOP,
     css = '',
     threshold = 0,
-    onScreenshotsUpdated = () => {},
+    onSnapshotsUpdated = () => {},
     updateSnapshots = false,
     onSnapshotCreated = () => {},
     createSnapshots = false,
@@ -121,7 +121,7 @@ const Differ = function ({
           if (process.env.UPDATE_SNAPSHOTS || updateSnapshots) {
             differ.moveSnapshot({ path: savePath, filename: 'theirs-' + componentName + '.png' });
             differ.cleanup();
-            onScreenshotsUpdated();
+            onSnapshotsUpdated();
           } else if (process.env.CREATE_SNAPSHOTS || createSnapshots) {
             let created = false;
             if ( !fileExists( savePath + 'theirs-' + componentName + '.png' ) ) {

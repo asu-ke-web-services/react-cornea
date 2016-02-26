@@ -80,7 +80,7 @@ describe( 'Differ', () => {
     it( 'will create a snapshot when updating', function ( done ) {
       this.timeout( 10000 );
 
-      const onScreenshotsUpdated = () => {
+      const onSnapshotsUpdated = () => {
         expect( fileExists( theirFilePath ) ).to.equal( true );
 
         done();
@@ -91,7 +91,7 @@ describe( 'Differ', () => {
         componentName,
         savePath: __dirname + '/fixtures/',
         updateSnapshots: true,
-        onScreenshotsUpdated
+        onSnapshotsUpdated
       } );
 
       differ.compare();
@@ -104,7 +104,7 @@ describe( 'Differ', () => {
     it( 'can compare snapshots', function ( done ) {
       this.timeout( 10000 );
 
-      const onScreenshotsUpdated = () => {
+      const onSnapshotsUpdated = () => {
         const anotherDiffer = new Differ( {
           component: <ReactFixture name={name} description={description} />,
           componentName,
@@ -127,7 +127,7 @@ describe( 'Differ', () => {
         componentName,
         savePath: __dirname + '/fixtures/',
         updateSnapshots: true,
-        onScreenshotsUpdated
+        onSnapshotsUpdated
       } );
 
       differ.compare();
@@ -139,7 +139,7 @@ describe( 'Differ', () => {
     it( 'can cleanup snapshots', function ( done ) {
       this.timeout( 10000 );
 
-      const onScreenshotsUpdated = () => {
+      const onSnapshotsUpdated = () => {
         const anotherDiffer = new Differ( {
           component: <ReactFixture name={name} description={description} />,
           componentName,
@@ -166,7 +166,7 @@ describe( 'Differ', () => {
         componentName,
         savePath: __dirname + '/fixtures/',
         updateSnapshots: true,
-        onScreenshotsUpdated
+        onSnapshotsUpdated
       } );
 
       differ.compare();
