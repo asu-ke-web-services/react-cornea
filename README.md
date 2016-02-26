@@ -84,6 +84,12 @@ If you are working on a large visual change, you can force new screenshots to be
 env UPDATE_SNAPSHOTS=1 npm test
 ```
 
+You can also specify components by name:
+
+```sh
+env UPDATE_SNAPSHOTS="my-component" npm test
+```
+
 Or by passing in an updateSnapshots option:
 
 ```js

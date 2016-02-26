@@ -127,7 +127,24 @@ const Differ = function ({
   this.compare = () => {
     var promise = new Promise((resolve, reject) => {
       this.snap( { path: savePath } ).then((differ) => {
+        let willHandleUpdate = false;
+
         if (process.env.UPDATE_SNAPSHOTS || updateSnapshots) {
+          willHandleUpdate = true;
+
+          if (typeof process.env.UPDATE_SNAPSHOTS === 'string' &&
+              process.env.UPDATE_SNAPSHOTS !== '1' &&
+              process.env.UPDATE_SNAPSHOTS !== 'true') {
+            // We are trying to update a specific component
+            // Flag componentNames that are not the one specified
+            // as false.
+            if (process.env.UPDATE_SNAPSHOTS !== componentName) {
+              willHandleUpdate = false;
+            }
+          }
+        }
+
+        if (willHandleUpdate) {
           differ.moveSnapshot({ path: savePath, filename: 'theirs-' + componentName + '.png' });
           differ.cleanup();
           onSnapshotsUpdated();
