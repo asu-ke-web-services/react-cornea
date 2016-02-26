@@ -87,11 +87,19 @@ const Differ = function ({
         diffImage: path + 'difference.png',
         threshold
       }, function (err, imagesAreSame) {
+        if (err) {
+          reject(err);
+        }
+
         imagemagick().command('composite') 
           .in("-gravity", "center")
           .in(path + 'difference.png')
           .in(this.currentSnap)
           .write(path + 'difference.png', function (err) {
+            if (err) {
+              reject(err);
+            }
+
             resolve(imagesAreSame);
           });
       }.bind(this));
