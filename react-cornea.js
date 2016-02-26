@@ -6,6 +6,8 @@ import fs from 'fs';
 import fileExists from 'file-exists';
 import gm from 'gm';
 
+import { DEVICE_SIZES } from './enums/device-sizes';
+
 let imagemagick = gm.subClass({ imageMagick: true });
 
 const renderHtml = (component, css) => {
@@ -39,11 +41,14 @@ const createScreenshot = ({ resolve, reject, componentName, html, ref, path, css
   });
 };
 
+/**
+ * Constructor
+ */
 const Differ = function ({
     componentName,
     component,
     savePath,
-    viewportSize = { width: 1440, height: 900 },
+    viewportSize = DEVICE_SIZES.DESKTOP,
     css = '',
     threshold = 0,
     onScreenshotsUpdated = () => {},

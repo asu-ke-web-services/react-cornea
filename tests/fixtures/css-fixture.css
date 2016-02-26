@@ -1,0 +1,12 @@
+.container {
+  padding: 10px;
+}
+
+.name {
+  color: red;
+  font-size: 2em;
+}
+
+.description {
+  color: blue;
+}
