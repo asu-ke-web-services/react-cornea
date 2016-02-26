@@ -52,7 +52,9 @@ const Differ = function ({
     css = '',
     threshold = 0,
     onScreenshotsUpdated = () => {},
-    updateSnapshots = false
+    updateSnapshots = false,
+    onSnapshotCreated = () => {},
+    createSnapshots = false,
 }) {
   this.currentSnap = null;
   this.currentDiff = null;
@@ -120,6 +122,15 @@ const Differ = function ({
             differ.moveSnapshot({ path: savePath, filename: 'theirs-' + componentName + '.png' });
             differ.cleanup();
             onScreenshotsUpdated();
+          } else if (process.env.CREATE_SNAPSHOTS || createSnapshots) {
+            let created = false;
+            if ( !fileExists( savePath + 'theirs-' + componentName + '.png' ) ) {
+              differ.moveSnapshot({ path: savePath, filename: 'theirs-' + componentName + '.png' });
+              created = true;
+            }
+            
+            differ.cleanup();
+            onSnapshotCreated(created);
           } else {
             resolve(areTheSame);
           }

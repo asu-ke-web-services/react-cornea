@@ -63,10 +63,29 @@ describe('A Program Component', () => {
 
 ```
 
+For your first set of snapshots, you can use the environment variables to geenrate snapshots for components that do not yet have snapshots:
+
+```sh
+env CREATE_SNAPSHOTS=1 npm test
+```
+
+Or by passing in a createSnapshots option:
+
+```js
+var differ = new Differ({
+  component: <Program program={program} />,
+  componentName: 'program',
+  savePath: __dirname + '/',
+  threshold: 0,
+  onSnapshotCreated: done,
+  createSnapshots: true
+});
+```
+
 If you are working on a large visual change, you can force new screenshots to be generated without running assertions by using environment variables in the command line:
 
 ```sh
-env UPDATE_SNAPSHOTS=1 npm run testonly
+env UPDATE_SNAPSHOTS=1 npm test
 ```
 
 Or by passing in an updateSnapshots option:

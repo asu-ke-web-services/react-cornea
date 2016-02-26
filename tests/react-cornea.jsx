@@ -19,12 +19,65 @@ describe( 'Differ', () => {
   const description = 'Making sure we can detect changes';
 
   describe( 'React Snapshots', () => {
+    it( 'will create a snapshot when creating', function ( done ) {
+      this.timeout( 10000 );
+
+      const onSnapshotCreated = (e) => {
+        expect( fileExists( theirFilePath ) ).to.equal( true );
+        expect( e ).to.equal( true );
+
+        done();
+      };
+
+      const differ = new Differ( {
+        component: <ReactFixture name={name} description={description} />,
+        componentName,
+        savePath: __dirname + '/fixtures/',
+        createSnapshots: true,
+        onSnapshotCreated
+      } );
+
+      differ.compare();
+    } );
+
+    it( 'will not create a snapshot if it already exists', function ( done ) {
+      this.timeout( 10000 );
+
+      const onSnapshotCreated = () => {
+        const onSnapshotCreatedAgain = (e) => {
+          expect( fileExists( theirFilePath ) ).to.equal( true );
+          expect( e ).to.equal( false );
+
+          done();
+        }
+
+        const anotherDiffer = new Differ( {
+          component: <ReactFixture name={name} description={description} />,
+          componentName,
+          savePath: __dirname + '/fixtures/',
+          createSnapshots: true,
+          onSnapshotCreated: onSnapshotCreatedAgain
+        } );
+
+        anotherDiffer.compare();
+      };
+
+      const differ = new Differ( {
+        component: <ReactFixture name={name} description={description} />,
+        componentName,
+        savePath: __dirname + '/fixtures/',
+        createSnapshots: true,
+        onSnapshotCreated
+      } );
+
+      differ.compare();
+    } );
 
     /**
-     * Generate a snapshot and check that it
+     * Update a snapshot and check that it
      * exists
      */
-    it( 'can generate snapshot', function ( done ) {
+    it( 'will create a snapshot when updating', function ( done ) {
       this.timeout( 10000 );
 
       const onScreenshotsUpdated = () => {
@@ -123,6 +176,14 @@ describe( 'Differ', () => {
       // Clean up
       if ( fileExists( theirFilePath ) ) {
         fs.unlinkSync( theirFilePath );
+      }
+
+      if ( fileExists( yourFilePath ) ) {
+        fs.unlinkSync( yourFilePath );
+      }
+
+      if ( fileExists( diffFilePath ) ) {
+        fs.unlinkSync( diffFilePath );
       }
 
       done();
