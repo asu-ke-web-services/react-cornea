@@ -51,8 +51,10 @@ const Differ = function ({
     viewportSize = DEVICE_SIZES.DESKTOP,
     css = '',
     threshold = 0,
-    onScreenshotsUpdated = () => {},
-    updateSnapshots = false
+    onSnapshotsUpdated = () => {},
+    updateSnapshots = false,
+    onSnapshotCreated = () => {},
+    createSnapshots = false,
 }) {
   this.currentSnap = null;
   this.currentDiff = null;
@@ -119,7 +121,16 @@ const Differ = function ({
           if (process.env.UPDATE_SNAPSHOTS || updateSnapshots) {
             differ.moveSnapshot({ path: savePath, filename: 'theirs-' + componentName + '.png' });
             differ.cleanup();
-            onScreenshotsUpdated();
+            onSnapshotsUpdated();
+          } else if (process.env.CREATE_SNAPSHOTS || createSnapshots) {
+            let created = false;
+            if ( !fileExists( savePath + 'theirs-' + componentName + '.png' ) ) {
+              differ.moveSnapshot({ path: savePath, filename: 'theirs-' + componentName + '.png' });
+              created = true;
+            }
+            
+            differ.cleanup();
+            onSnapshotCreated(created);
           } else {
             resolve(areTheSame);
           }
