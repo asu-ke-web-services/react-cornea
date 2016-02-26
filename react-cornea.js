@@ -6,6 +6,8 @@ import fs from 'fs';
 import fileExists from 'file-exists';
 import gm from 'gm';
 
+import { default as Stylesheets } from './stylesheets/stylesheets'; 
+
 import { DEVICE_SIZES } from './enums/device-sizes';
 
 let imagemagick = gm.subClass({ imageMagick: true });
@@ -14,9 +16,9 @@ const renderHtml = (component, css) => {
   const wrapper = render(component);
   let html = wrapper.html();
 
-  let styles = '<style>' + css + '</style>'; 
+  const stylesheets = new Stylesheets();
 
-  html = '<html><head>' + styles + '</head><body>' + html + '</body></html>'; 
+  html = '<html><head>' + stylesheets.createStyles(css) + '</head><body>' + html + '</body></html>'; 
 
   return html;
 }
