@@ -117,24 +117,24 @@ const Differ = function ({
   this.compare = () => {
     var promise = new Promise((resolve, reject) => {
       this.snap( { path: savePath } ).then((differ) => {
-        differ.compareTo( { path: savePath, filename: 'theirs-' + componentName + '.png' } ).then((areTheSame) => {
-          if (process.env.UPDATE_SNAPSHOTS || updateSnapshots) {
+        if (process.env.UPDATE_SNAPSHOTS || updateSnapshots) {
+          differ.moveSnapshot({ path: savePath, filename: 'theirs-' + componentName + '.png' });
+          differ.cleanup();
+          onSnapshotsUpdated();
+        } else if (process.env.CREATE_SNAPSHOTS || createSnapshots) {
+          let created = false;
+          if ( !fileExists( savePath + 'theirs-' + componentName + '.png' ) ) {
             differ.moveSnapshot({ path: savePath, filename: 'theirs-' + componentName + '.png' });
-            differ.cleanup();
-            onSnapshotsUpdated();
-          } else if (process.env.CREATE_SNAPSHOTS || createSnapshots) {
-            let created = false;
-            if ( !fileExists( savePath + 'theirs-' + componentName + '.png' ) ) {
-              differ.moveSnapshot({ path: savePath, filename: 'theirs-' + componentName + '.png' });
-              created = true;
-            }
-            
-            differ.cleanup();
-            onSnapshotCreated(created);
-          } else {
-            resolve(areTheSame);
+            created = true;
           }
-        });
+          
+          differ.cleanup();
+          onSnapshotCreated(created);
+        } else {
+          differ.compareTo( { path: savePath, filename: 'theirs-' + componentName + '.png' } ).then((areTheSame) => {
+            resolve(areTheSame);
+          });
+        }
       });
     });
 
