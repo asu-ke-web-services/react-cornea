@@ -1,6 +1,8 @@
 React Cornea
 ============
 
+[![Build Status](https://travis-ci.org/gios-asu/react-cornea.svg?branch=develop)](https://travis-ci.org/gios-asu/react-cornea)
+
 A testing utility for generating visual diffs of your React components.
 
 This tool will create 3 files - `theirs-{componentName}.png`, `yours-{componentName}.png` and `difference.png`. When `differ.cleanup` is called, `yours-{componentName}.png` and `difference.png` will be deleted.
