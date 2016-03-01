@@ -6,6 +6,8 @@ import fs from 'fs';
 import fileExists from 'file-exists';
 import gm from 'gm';
 
+import { default as Stylesheets } from './stylesheets/stylesheets'; 
+
 import { DEVICE_SIZES } from './enums/device-sizes';
 
 let imagemagick = gm.subClass({ imageMagick: true });
@@ -14,9 +16,9 @@ const renderHtml = (component, css) => {
   const wrapper = render(component);
   let html = wrapper.html();
 
-  let styles = '<style>' + css + '</style>'; 
+  const stylesheets = new Stylesheets();
 
-  html = '<html><head>' + styles + '</head><body>' + html + '</body></html>'; 
+  html = '<html><head>' + stylesheets.createStyles(css) + '</head><body>' + html + '</body></html>'; 
 
   return html;
 }
@@ -85,11 +87,19 @@ const Differ = function ({
         diffImage: path + 'difference.png',
         threshold
       }, function (err, imagesAreSame) {
+        if (err) {
+          reject(err);
+        }
+
         imagemagick().command('composite') 
           .in("-gravity", "center")
           .in(path + 'difference.png')
           .in(this.currentSnap)
           .write(path + 'difference.png', function (err) {
+            if (err) {
+              reject(err);
+            }
+
             resolve(imagesAreSame);
           });
       }.bind(this));
@@ -117,7 +127,24 @@ const Differ = function ({
   this.compare = () => {
     var promise = new Promise((resolve, reject) => {
       this.snap( { path: savePath } ).then((differ) => {
+        let willHandleUpdate = false;
+
         if (process.env.UPDATE_SNAPSHOTS || updateSnapshots) {
+          willHandleUpdate = true;
+
+          if (typeof process.env.UPDATE_SNAPSHOTS === 'string' &&
+              process.env.UPDATE_SNAPSHOTS !== '1' &&
+              process.env.UPDATE_SNAPSHOTS !== 'true') {
+            // We are trying to update a specific component
+            // Flag componentNames that are not the one specified
+            // as false.
+            if (process.env.UPDATE_SNAPSHOTS !== componentName) {
+              willHandleUpdate = false;
+            }
+          }
+        }
+
+        if (willHandleUpdate) {
           differ.moveSnapshot({ path: savePath, filename: 'theirs-' + componentName + '.png' });
           differ.cleanup();
           onSnapshotsUpdated();
