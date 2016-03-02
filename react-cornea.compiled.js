@@ -31,17 +31,31 @@ var _gm = require('gm');
 
 var _gm2 = _interopRequireDefault(_gm);
 
+var _stylesheets = require('./stylesheets/stylesheets');
+
+var _stylesheets2 = _interopRequireDefault(_stylesheets);
+
+var _deviceSizes = require('./enums/device-sizes');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var imagemagick = _gm2.default.subClass({ imageMagick: true });
 
-var renderHtml = function renderHtml(component, css) {
+var renderHtml = function renderHtml(component, css, cssFile) {
   var wrapper = (0, _enzyme.render)(component);
   var html = wrapper.html();
 
-  var styles = '<style>' + css + '</style>';
+  var stylesheets = new _stylesheets2.default();
 
-  html = '<html><head>' + styles + '</head><body>' + html + '</body></html>';
+  if (css) {
+    stylesheets.addCSS(css);
+  }
+
+  if (cssFile) {
+    stylesheets.addCSSFile(cssFile);
+  }
+
+  html = '<html><head>' + stylesheets.createStyles() + '</head><body>' + html + '</body></html>';
 
   return html;
 };
@@ -75,6 +89,9 @@ var createScreenshot = function createScreenshot(_ref) {
   });
 };
 
+/**
+ * Constructor
+ */
 var Differ = function Differ(_ref2) {
   var _this = this;
 
@@ -82,19 +99,25 @@ var Differ = function Differ(_ref2) {
   var component = _ref2.component;
   var savePath = _ref2.savePath;
   var _ref2$viewportSize = _ref2.viewportSize;
-  var viewportSize = _ref2$viewportSize === undefined ? { width: 1440, height: 900 } : _ref2$viewportSize;
+  var viewportSize = _ref2$viewportSize === undefined ? _deviceSizes.DEVICE_SIZES.DESKTOP : _ref2$viewportSize;
   var _ref2$css = _ref2.css;
   var css = _ref2$css === undefined ? '' : _ref2$css;
+  var _ref2$cssFile = _ref2.cssFile;
+  var cssFile = _ref2$cssFile === undefined ? false : _ref2$cssFile;
   var _ref2$threshold = _ref2.threshold;
   var threshold = _ref2$threshold === undefined ? 0 : _ref2$threshold;
-  var _ref2$onScreenshotsUp = _ref2.onScreenshotsUpdated;
-  var onScreenshotsUpdated = _ref2$onScreenshotsUp === undefined ? function () {} : _ref2$onScreenshotsUp;
+  var _ref2$onSnapshotsUpda = _ref2.onSnapshotsUpdated;
+  var onSnapshotsUpdated = _ref2$onSnapshotsUpda === undefined ? function () {} : _ref2$onSnapshotsUpda;
   var _ref2$updateSnapshots = _ref2.updateSnapshots;
   var updateSnapshots = _ref2$updateSnapshots === undefined ? false : _ref2$updateSnapshots;
+  var _ref2$onSnapshotCreat = _ref2.onSnapshotCreated;
+  var onSnapshotCreated = _ref2$onSnapshotCreat === undefined ? function () {} : _ref2$onSnapshotCreat;
+  var _ref2$createSnapshots = _ref2.createSnapshots;
+  var createSnapshots = _ref2$createSnapshots === undefined ? false : _ref2$createSnapshots;
 
   this.currentSnap = null;
   this.currentDiff = null;
-  this.html = renderHtml(component, css);
+  this.html = renderHtml(component, css, cssFile);
 
   this.snap = function (_ref3) {
     var _ref3$path = _ref3.path;
@@ -127,7 +150,15 @@ var Differ = function Differ(_ref2) {
         diffImage: path + 'difference.png',
         threshold: threshold
       }, function (err, imagesAreSame) {
+        if (err) {
+          reject(err);
+        }
+
         imagemagick().command('composite').in("-gravity", "center").in(path + 'difference.png').in(this.currentSnap).write(path + 'difference.png', function (err) {
+          if (err) {
+            reject(err);
+          }
+
           resolve(imagesAreSame);
         });
       }.bind(_this));
@@ -158,15 +189,39 @@ var Differ = function Differ(_ref2) {
   this.compare = function () {
     var promise = new Promise(function (resolve, reject) {
       _this.snap({ path: savePath }).then(function (differ) {
-        differ.compareTo({ path: savePath, filename: 'theirs-' + componentName + '.png' }).then(function (areTheSame) {
-          if (process.env.UPDATE_SNAPSHOTS || updateSnapshots) {
-            differ.moveSnapshot({ path: savePath, filename: 'theirs-' + componentName + '.png' });
-            differ.cleanup();
-            onScreenshotsUpdated();
-          } else {
-            resolve(areTheSame);
+        var willHandleUpdate = false;
+
+        if (process.env.UPDATE_SNAPSHOTS || updateSnapshots) {
+          willHandleUpdate = true;
+
+          if (typeof process.env.UPDATE_SNAPSHOTS === 'string' && process.env.UPDATE_SNAPSHOTS !== '1' && process.env.UPDATE_SNAPSHOTS !== 'true') {
+            // We are trying to update a specific component
+            // Flag componentNames that are not the one specified
+            // as false.
+            if (process.env.UPDATE_SNAPSHOTS !== componentName) {
+              willHandleUpdate = false;
+            }
           }
-        });
+        }
+
+        if (willHandleUpdate) {
+          differ.moveSnapshot({ path: savePath, filename: 'theirs-' + componentName + '.png' });
+          differ.cleanup();
+          onSnapshotsUpdated();
+        } else if (process.env.CREATE_SNAPSHOTS || createSnapshots) {
+          var created = false;
+          if (!(0, _fileExists2.default)(savePath + 'theirs-' + componentName + '.png')) {
+            differ.moveSnapshot({ path: savePath, filename: 'theirs-' + componentName + '.png' });
+            created = true;
+          }
+
+          differ.cleanup();
+          onSnapshotCreated(created);
+        } else {
+          differ.compareTo({ path: savePath, filename: 'theirs-' + componentName + '.png' }).then(function (areTheSame) {
+            resolve(areTheSame);
+          });
+        }
       });
     });
 

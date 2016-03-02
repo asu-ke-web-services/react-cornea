@@ -125,6 +125,7 @@ Create a new Differ object
     - savePath - The folder where your screenshots should be saved
     - threshold - The percentage difference allowed. Defaults to 0
     - css - A CSS string of custom styles you would like injected. Defaults to ''
+    - cssFile - The path to a css file to include
     - viewportSize - An object with height and width defined as numbers. Defaults to { width: 1440, height: 900 }
     - onSnapshotUpdated - What to do after screenshots have been updated when using the `env UPDATE_SCREENSHOTS=1` or option `updateScreenshots: true`. Defaults to noop.
     - updateSnapshots - Instead of running tests, simply update snapshots. Defaults to false.

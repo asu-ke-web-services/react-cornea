@@ -1,6 +1,21 @@
+import fs from 'fs';
+
 export default class Stylesheets {
+  constructor() {
+    this.css = '';
+  }
+
+  addCSS(css) {
+    this.css += css;
+  }
+
+  addCSSFile(cssFilePath) {
+    let css = fs.readFileSync(cssFilePath).toString();
+    this.addCSS(css);
+  }
+
   createStyles(css) {
-    return '<style>' + this.createReset() + css + '</style>';
+    return '<style>' + this.createReset() + this.css + '</style>';
   }
 
   createReset() {
