@@ -12,13 +12,21 @@ import { DEVICE_SIZES } from './enums/device-sizes';
 
 let imagemagick = gm.subClass({ imageMagick: true });
 
-const renderHtml = (component, css) => {
+const renderHtml = (component, css, cssFile) => {
   const wrapper = render(component);
   let html = wrapper.html();
 
   const stylesheets = new Stylesheets();
 
-  html = '<html><head>' + stylesheets.createStyles(css) + '</head><body>' + html + '</body></html>'; 
+  if (css) {
+    stylesheets.addCSS(css);
+  }
+
+  if (cssFile) {
+    stylesheets.addCSSFile(cssFile);
+  }
+
+  html = '<html><head>' + stylesheets.createStyles() + '</head><body>' + html + '</body></html>'; 
 
   return html;
 }
@@ -52,6 +60,7 @@ const Differ = function ({
     savePath,
     viewportSize = DEVICE_SIZES.DESKTOP,
     css = '',
+    cssFile = false,
     threshold = 0,
     onSnapshotsUpdated = () => {},
     updateSnapshots = false,
@@ -60,7 +69,7 @@ const Differ = function ({
 }) {
   this.currentSnap = null;
   this.currentDiff = null;
-  this.html        = renderHtml(component, css);
+  this.html        = renderHtml(component, css, cssFile);
 
   this.snap = ({ path = './' }) => {
     let promise = new Promise((resolve, reject) => {
