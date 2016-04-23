@@ -3,7 +3,7 @@ import React from 'react';
 import { expect } from 'chai';
 const { describe, it } = global;
 
-import { default as Stylesheets } from '../stylesheets/stylesheets';
+import { Stylesheets } from '../react-cornea';
 
 describe( 'Stylesheets', () => {
   let stylesheet;

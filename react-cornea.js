@@ -123,6 +123,8 @@ table {
   }
 }
 
+export { Stylesheets };
+
 let imagemagick = gm.subClass({ imageMagick: true });
 
 const renderHtml = (component, css, cssFile) => {
