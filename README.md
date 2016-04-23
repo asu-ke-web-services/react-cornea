@@ -15,8 +15,14 @@ npm install --save-dev react-cornea
 
 This NPM package has a dependency on [ImageMagick](http://www.imagemagick.org/). To install it, see the [ImageMagick documentation](http://www.imagemagick.org/script/binary-releases.php). Installation on some Linux systems, such as Ubuntu is easy:
 
-```
+```sh
 sudo apt-get install imagemagick
+```
+
+For OSX using Brew:
+
+```sh
+brew install ImageMagick
 ```
 
 Note that when using TravisCI, ImageMagick is already installed.

@@ -1,6 +1,6 @@
 {
   "name": "react-cornea",
- "version": "1.0.3",
+  "version": "1.0.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/gios-asu/react-cornea.git"
@@ -9,7 +9,7 @@
     "mocha": "--require .scripts/mocha-runner tests/*.jsx"
   },
   "description": "A testing utility for generating visual diffs of your React components",
-  "main": "react-cornea.compiled.js",
+  "main": "./react-cornea.compiled.js",
   "scripts": {
     "build": "babel react-cornea.js --out-file react-cornea.compiled.js",
     "lint": "eslint ./libs ./client ./server --ext .js --ext .jsx",
