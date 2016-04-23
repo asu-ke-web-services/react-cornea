@@ -50,6 +50,7 @@ describe('A Program Component', () => {
     var differ = new Differ({
       component: <Program program={program} />,
       componentName: 'program',
+      onSnapshotCreated: done,
       savePath: __dirname + '/'
     });
 
