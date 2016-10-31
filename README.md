@@ -12,6 +12,10 @@ This tool will create 3 files - `theirs-{componentName}.png`, `yours-{componentN
 ```
 npm install --save-dev react-cornea
 ```
+or
+```
+yarn add --dev react-cornea
+```
 
 This NPM package has a dependency on [ImageMagick](http://www.imagemagick.org/). To install it, see the [ImageMagick documentation](http://www.imagemagick.org/script/binary-releases.php). Installation on some Linux systems, such as Ubuntu is easy:
 
